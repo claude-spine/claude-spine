@@ -45,15 +45,23 @@ the file exists. Three hazards walk straight through it.
 ## this is not hypothetical — here is the survey
 
 I pointed every check in this tool at real public repositories. **3,696 of them have a
-`.claude/settings.json`.** Of the first 87 with a parseable one:
+`.claude/settings.json`.** Of **266** with a parseable one:
 
 | | | |
 |---:|---:|---|
-| **4** | **5%** | **have a schema fault that disables every hook in the file** ([#75071](https://github.com/anthropics/claude-code/issues/75071)) |
-| 5 | 6% | have `PostToolUse` hooks that never fire on MCP calls ([#73586](https://github.com/anthropics/claude-code/issues/73586)) |
-| 45 | 52% | face the no-safe-deny trap ([#78527](https://github.com/anthropics/claude-code/issues/78527)) |
-| 35 | 40% | have context-injecting hooks whose stdout may not reach the model ([#79299](https://github.com/anthropics/claude-code/issues/79299)) |
-| 19 | 22% | have deny rules that can be bypassed ([#78752](https://github.com/anthropics/claude-code/issues/78752)) |
+| **13** | **5%** | **have a schema fault that disables every hook in the file** ([#75071](https://github.com/anthropics/claude-code/issues/75071)) |
+| 10 | 4% | have `PostToolUse` hooks that never fire on MCP calls ([#73586](https://github.com/anthropics/claude-code/issues/73586)) |
+| 115 | 43% | face the no-safe-deny trap ([#78527](https://github.com/anthropics/claude-code/issues/78527)) |
+| 99 | 37% | have context-injecting hooks whose stdout may not reach the model ([#79299](https://github.com/anthropics/claude-code/issues/79299)) |
+| 49 | 18% | have deny rules that can be bypassed ([#78752](https://github.com/anthropics/claude-code/issues/78752)) |
+| 4 | 2% | have hooks gated by unsound `if` scoping ([#80140](https://github.com/anthropics/claude-code/issues/80140)) |
+
+**Only 74% are clean on every audit above.** One repo in four with hooks has at least one hook
+that does not do what its author thinks it does.
+
+An earlier draft of this table ran on the first 87 repos and reported 52% / 40% / 22% for the
+three middle rows. Widening to 266 pulled all three down. The number this rests on — the 5%
+with every hook dead — did not move. Both runs are in the git history.
 
 The 5% is the one to sit with. Those repos have **every hook silently disabled right now** and
 the maintainers don't know. The cause is the same every time: someone writes `matcher: "*"`

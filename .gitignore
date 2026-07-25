@@ -27,3 +27,6 @@ sign-license.js
 publish.js
 golive.js
 survey.js
+
+# survey run logs — local artefacts, contain nothing shippable
+survey-*.log
