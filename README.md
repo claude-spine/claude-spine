@@ -44,6 +44,8 @@ the file exists. Three hazards walk straight through it.
 
 ## this is not hypothetical — here is the survey
 
+> Full writeup, method, and the headline I had to retract: **[SURVEY.md](SURVEY.md)**
+
 I pointed every check in this tool at real public repositories. **3,696 of them have a
 `.claude/settings.json`** — GitHub code search finds that many. I fetched and audited **299** of
 them (the cap is my own rate limit, not a parse failure rate); **295** parsed:
