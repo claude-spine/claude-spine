@@ -51,6 +51,40 @@ heuristic that says so out loud rather than a pass/fail.
 #73586), called but disarmed (#80039, #80140), and called, working, output thrown away (#79299).
 All three report green everywhere upstream.
 
+---
+
+## the one that is about guards themselves
+
+| audit | issue | filed | what it catches |
+|---|---|---|---|
+| deny mechanism | [#78527](https://github.com/anthropics/claude-code/issues/78527) | 2026-07-17 | **there is currently no safe way to deny** |
+
+This is the check aimed at the category this tool is in, so it gets its own section.
+
+Before 2.1.210, a `PreToolUse` denial fed back to the model as an `is_error` tool_result and the
+model reacted in-turn. tehlowkeywiz has transcripts showing **74 denials across thirty versions
+with 100% turn survival.** From 2.1.210 the identical denial emits `hook_stopped_continuation`
+and **ends the turn**: no feedback reaches the model, and the Stop-hook chain is skipped, so
+nothing announces the stall. Unattended sessions and subagents hang until a human arrives.
+
+The obvious mitigation is to decide `ask` instead. Per [#79449](https://github.com/anthropics/claude-code/issues/79449),
+`ask` can silently fail to surface — and it fails **open**. The call proceeds and nobody is asked.
+
+So both directions are broken, differently, and both silently. A guard author today is choosing
+between hanging a session and not guarding at all. **No configuration fixes this.** What the
+check does is make sure the choice was deliberate rather than discovered at 3am.
+
+The working recommendation, stated plainly because there isn't a good option:
+
+- `deny` for the genuinely irreversible — a hung turn is recoverable, a dropped table is not
+- never `ask` for anything unrecoverable, because it fails open
+- if you run unattended (CI, subagents, headless), assume a deny may hang the run, and alarm on
+  wall-clock from somewhere outside the hook
+
+And one more, which matters most to anyone selling a CI gate: **prompt-type hooks appear to fail
+open entirely in headless `-p` mode**, returning `ok:true` even when instructed unconditionally
+otherwise. That is enforcement absent in exactly the place CI runs. Flagged separately.
+
 **On the MCP one.** Reported by Chulf58 over a three-week window with hook dispatch otherwise
 healthy, and corroborated independently as the third finding in #75071. It matters more than it
 reads: MCP is where the database server, the deploy server and the ticketing integration live.
