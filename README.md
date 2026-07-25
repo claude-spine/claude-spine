@@ -45,25 +45,41 @@ the file exists. Three hazards walk straight through it.
 ## this is not hypothetical — here is the survey
 
 I pointed every check in this tool at real public repositories. **3,696 of them have a
-`.claude/settings.json`.** Of **266** with a parseable one:
+`.claude/settings.json`** — GitHub code search finds that many. I fetched and audited **299** of
+them (the cap is my own rate limit, not a parse failure rate); **295** parsed:
 
 | | | |
 |---:|---:|---|
-| **13** | **5%** | **have a schema fault that disables every hook in the file** ([#75071](https://github.com/anthropics/claude-code/issues/75071)) |
-| 10 | 4% | have `PostToolUse` hooks that never fire on MCP calls ([#73586](https://github.com/anthropics/claude-code/issues/73586)) |
-| 115 | 43% | face the no-safe-deny trap ([#78527](https://github.com/anthropics/claude-code/issues/78527)) |
-| 99 | 37% | have context-injecting hooks whose stdout may not reach the model ([#79299](https://github.com/anthropics/claude-code/issues/79299)) |
-| 49 | 18% | have deny rules that can be bypassed ([#78752](https://github.com/anthropics/claude-code/issues/78752)) |
-| 4 | 2% | have hooks gated by unsound `if` scoping ([#80140](https://github.com/anthropics/claude-code/issues/80140)) |
+| **129** | **44%** | **face the no-safe-deny trap** ([#78527](https://github.com/anthropics/claude-code/issues/78527)) |
+| 112 | 38% | have context-injecting hooks whose stdout may not reach the model ([#79299](https://github.com/anthropics/claude-code/issues/79299)) |
+| 54 | 18% | have deny rules that can be bypassed ([#78752](https://github.com/anthropics/claude-code/issues/78752)) |
+| 10 | 3% | have `PostToolUse` hooks that never fire on MCP calls ([#73586](https://github.com/anthropics/claude-code/issues/73586)) |
+| 4 | 1% | have hooks gated by unsound `if` scoping ([#80140](https://github.com/anthropics/claude-code/issues/80140)) |
+| 2 | 1% | have a schema fault that disables every hook in the file ([#75071](https://github.com/anthropics/claude-code/issues/75071)) |
 
-**Only 74% are clean on every audit above.** One repo in four with hooks has at least one hook
+**Only 77% are clean on every audit above.** Nearly one repo in four with hooks has at least one
 that does not do what its author thinks it does.
 
-An earlier draft of this table ran on the first 87 repos and reported 52% / 40% / 22% for the
-three middle rows. Widening to 266 pulled all three down. The number this rests on — the 5%
-with every hook dead — did not move. Both runs are in the git history.
+**The 44% is the one to sit with**, because it is not an accident anyone made — it is the
+current state of the platform. There is no safe way to deny right now: `deny` ends the turn
+silently on 2.1.210+, and `ask` can fail to surface and fails *open*. Most people writing a
+PreToolUse guard picked one of those two and believe they are protected.
 
-The 5% is the one to sit with. Those repos have **every hook silently disabled right now** and
+### exactly what the audit counts, so you can check me
+
+The fatal row means **`matcher` is not a string** — e.g. `{"type":"always"}` — which is the
+repro in #75071 and takes the whole file down. It does **not** count invalid-regex *strings*
+like `"*"`: the issue notes those are tolerated, and this tool reports them separately as "this
+entry matches nothing," which is true and much less dramatic.
+
+That distinction cost me a headline. An earlier version of this table merged the two and
+reported **5% with every hook dead**, built on 13 repos whose only fault was a bare `*`. A
+reviewer pulled the citation, read it against my prose, and the number did not survive it. The
+real figure is 2 repos, 1%. The three rows above it never moved.
+
+I am leaving that here rather than quietly restating the number, because a tool whose whole
+argument is *your green check is lying to you* does not get to hide its own false green. Both
+runs are in the git history. Those repos have **every hook silently disabled right now** and
 the maintainers don't know. The cause is the same every time: someone writes `matcher: "*"`
 thinking it's a glob. It's a regex. Bare `*` is an invalid regex. One bad matcher takes the
 whole file down, with no warning anywhere.
@@ -119,8 +135,9 @@ Every hook-checking approach — including the fixtures above — has the same b
 it's structural: **a harness that spawns your hook will always find it healthy.** It proves
 the hook is *correct*. It cannot prove it is being *invoked*.
 
-That distinction is most of the problem. There are 467 open issues on `anthropics/claude-code`
-about hooks not firing, and the recurring word in them is *silently*:
+That distinction is most of the problem. A keyword search for `hook` across open issues on
+`anthropics/claude-code` returns **467** — that is a search count, not an audited one, and some
+of it is noise. I have read enough of it to say the recurring word is *silently*:
 
 - [#76322](https://github.com/anthropics/claude-code/issues/76322) — PreToolUse Bash hooks silently stop firing partway through a session
 - [#76897](https://github.com/anthropics/claude-code/issues/76897) — hooks stop firing after `EnterWorktree` switches to a linked worktree
@@ -195,7 +212,10 @@ settings file is perfectly valid, so a schema linter passes it happily.
 
 If you gate a hook with an `if` condition to keep an expensive guard off the hot path, that
 scoping is **not reliable**. From [#80140](https://github.com/anthropics/claude-code/issues/80140),
-reproduced with spy hooks over deterministic runs:
+reproduced with spy hooks over deterministic runs — **on Windows 11 via Git Bash, 2.1.217.** The
+reporter notes the documented "no" row is not reproducible there, so read this table as *the
+distinction the docs draw does not survive contact with that platform*, not as universal
+behaviour:
 
 | `if` condition | command executed | fires? |
 |---|---|---|
@@ -353,9 +373,25 @@ more than that in the recovery alone, before the postmortem. One `--skip-migrati
 against a schema-dependent release cost somebody 40 minutes of downtime — that's the real
 incident behind one of the example fixtures.
 
-This was priced at $19 for about an hour. That was wrong, and not because it left money on the
-table: at $19 nobody believes the thing prevents an outage, and the price was arguing against
-the product.
+### what happens when Anthropic fixes these
+
+Asked silently by every technical evaluator, so: **most of this repo survives the fixes, and the
+part that doesn't was never the asset.**
+
+The individual issues get patched — they should. What that leaves is a **regression corpus**:
+eighteen fixtures encoding failures that were real once, which is exactly what you want pointed
+at a fast-moving harness, because the way these come back is a refactor reintroducing a shape
+somebody already hit.
+
+And the canary is **bug-independent by construction.** It does not know or care which issue is
+open. It answers *was this hook invoked* by reading a stamp and a clock, and that question stays
+unanswerable by static analysis in any system where a harness invokes on your behalf. Fix every
+issue cited here and the canary is unchanged — the same instrument now points at MCP servers,
+subagents, and skills, which have the identical shape: a declaration that is valid, and an
+invocation that may never happen.
+
+The bet is not that Claude Code stays broken. It is that *configured* and *running* remain
+different words.
 
 ### licensing, honestly
 

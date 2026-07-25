@@ -1,22 +1,20 @@
 {
-  "ranAt": "2026-07-25T21:09:43.878Z",
+  "ranAt": "2026-07-25T21:45:42.160Z",
   "tally": {
     "scanned": 299,
     "parsed": 295,
-    "fatal": 15,
+    "fatal": 2,
     "mcp": 10,
-    "deny": 53,
+    "deny": 54,
     "ifcond": 4,
-    "inject": 111,
-    "denyMech": 128,
-    "clean": 221
+    "inject": 112,
+    "denyMech": 129,
+    "clean": 228
   },
   "hits": [
     {
       "repo": "parcadei/Continuous-Claude-v3",
-      "fatal": [
-        "hooks.PostToolUse[3].matcher: is not a valid pattern: \"*\""
-      ],
+      "fatal": [],
       "mcp": [
         "*"
       ]
@@ -31,12 +29,7 @@
     },
     {
       "repo": "wtyler2505/ProtoPulse",
-      "fatal": [
-        "hooks.PostToolUse[8].matcher: is not a valid pattern: \"*\"",
-        "hooks.Stop[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.UserPromptSubmit[0].matcher: is not a valid pattern: \"*\""
-      ],
+      "fatal": [],
       "mcp": [
         "*"
       ]
@@ -64,40 +57,6 @@
       ]
     },
     {
-      "repo": "adammanji/meterly-take-home",
-      "fatal": [
-        "hooks.SessionEnd[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "tygwan/AgenticREVIT",
-      "fatal": [
-        "hooks.Notification[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "auxi-wardrobe/auxi-all-in",
-      "fatal": [
-        "hooks.SubagentStart[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "arbgjr/estoque",
-      "fatal": [
-        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.PreToolUse[1].matcher: is not a valid pattern: \"Write(.agentic_sdlc/**/*)\"",
-        "hooks.PreToolUse[2].matcher: is not a valid pattern: \"Write(src/**/*)\"",
-        "hooks.PreToolUse[3].matcher: is not a valid pattern: \"Edit(src/**/*)\"",
-        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"Edit(*.py)\"",
-        "hooks.PostToolUse[1].matcher: is not a valid pattern: \"Write(*.py)\"",
-        "hooks.PostToolUse[3].matcher: is not a valid pattern: \"Write(*.spec.md)\""
-      ],
-      "mcp": []
-    },
-    {
       "repo": "OmelchMichael/mcp_agent_mail",
       "fatal": [],
       "mcp": [
@@ -107,9 +66,7 @@
     },
     {
       "repo": "rysweet/RustyClawd",
-      "fatal": [
-        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"*\""
-      ],
+      "fatal": [],
       "mcp": [
         "*"
       ]
@@ -122,44 +79,11 @@
       ]
     },
     {
-      "repo": "Wattanaroj2567/fallhelp",
-      "fatal": [
-        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "rkendev/smart-llm-router",
-      "fatal": [
-        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
       "repo": "shakefu/contextium",
-      "fatal": [
-        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"*\""
-      ],
+      "fatal": [],
       "mcp": [
         "*"
       ]
-    },
-    {
-      "repo": "e128/dotnet-reference",
-      "fatal": [
-        "hooks.StopFailure[0].matcher: is not a valid pattern: \"*\"",
-        "hooks.UserPromptSubmit[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "ngocsangyem/context-engineer-local",
-      "fatal": [
-        "hooks.SubagentStart[0].matcher: is not a valid pattern: \"*\""
-      ],
-      "mcp": []
     },
     {
       "repo": "buvis/home",
@@ -180,13 +104,6 @@
         "hooks.pre_deploy[2]: must be an object, got string",
         "hooks.post_deploy[0]: must be an object, got string",
         "hooks.post_deploy[1]: must be an object, got string"
-      ],
-      "mcp": []
-    },
-    {
-      "repo": "neyrojasj/smart-agent",
-      "fatal": [
-        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\""
       ],
       "mcp": []
     }
