@@ -436,6 +436,39 @@ test('injection audit is silent on a fresh install', async () => {
   assert.deepEqual(diag.injectAudit, [], 'flagged something in our own template');
 });
 
+test('deny-mechanism audit surfaces that neither deny nor ask is safe (#78527/#79449)', async () => {
+  // This one is about the category this product IS. A PreToolUse denial stopped feeding back to
+  // the model at 2.1.210 and now ends the turn with the Stop chain skipped, so the stall is
+  // silent and unattended runs hang. The obvious mitigation — decide `ask` — can fail to surface
+  // and fails OPEN. Both directions broken, differently. The check cannot fix that; it exists so
+  // the choice is deliberate.
+  const repo = tmp();
+  install(repo);
+  const diag = await diagnose(repo);
+
+  // The shipped template registers three PreToolUse hooks, and the ratchet among them denies.
+  assert.ok(diag.denyMech.length >= 1, 'PreToolUse hooks that can deny were not surfaced');
+  assert.ok(diag.denyMech.every((f) => f.event === 'PreToolUse'), 'flagged a non-PreToolUse hook');
+  assert.match(diag.denyMech[0].why, /78527/);
+});
+
+test('deny-mechanism audit calls out prompt-type hooks specifically', async () => {
+  // Prompt hooks get their own warning: besides ending the turn, they appear to fail open
+  // entirely in headless -p — which is exactly where CI runs, and where this tool is sold as a
+  // gate. Selling a CI gate without saying that would be dishonest.
+  const repo = tmp();
+  install(repo);
+  const sp = path.join(repo, '.claude', 'settings.json');
+  const s = JSON.parse(fs.readFileSync(sp, 'utf8'));
+  s.hooks.PreToolUse.push({ matcher: 'Bash', hooks: [{ type: 'prompt', command: 'security judge' }] });
+  fs.writeFileSync(sp, JSON.stringify(s, null, 2));
+
+  const diag = await diagnose(repo);
+  const prompts = diag.denyMech.filter((f) => f.type === 'prompt');
+  assert.equal(prompts.length, 1, 'prompt-type hook not distinguished from command-type');
+  assert.match(prompts[0].why, /headless/, 'the headless fail-open was not mentioned');
+});
+
 test('adopt reports cleanly when there is nothing to do', () => {
   const repo = tmp();
   install(repo); // only our own hooks
