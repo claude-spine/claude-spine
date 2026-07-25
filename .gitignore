@@ -1,0 +1,27 @@
+# ── secrets. nothing here is recoverable once it is public. ──────────────────────
+keys/
+.npmrc
+*.pem
+*.key
+
+# publish.js writes .npmrc containing the registry auth token and removes it in a `finally`.
+# A killed process skips `finally`, leaving the token sitting in the working tree. The whole
+# point of an automation token is that it publishes with no human in the loop — so a leaked
+# one is a stranger shipping code under my name. Ignored belt-and-braces.
+
+# ── build artefacts ─────────────────────────────────────────────────────────────
+node_modules/
+*.tgz
+
+# ── local hook state, not source ────────────────────────────────────────────────
+.claude/hooks/.signals.offset
+.claude/hooks/.last-fired.json
+*.spine-backup-*
+
+# ── mine, not the customer's ────────────────────────────────────────────────────
+# internal playbook, fulfilment tooling, release pipeline. gitignore has no inline
+# comments — a trailing # makes it match a filename containing that comment, so these
+# patterns sat here doing nothing while the files stayed untracked-but-shippable.
+outreach.md
+sign-license.js
+publish.js

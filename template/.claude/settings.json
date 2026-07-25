@@ -1,0 +1,47 @@
+{
+  "$comment": "Laid down by claude-spine. Every hook here is verified by `claude-spine doctor` against real known-bad payloads. A hook file that is not listed in this block never runs — doctor checks that too.",
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/permission-ratchet.js", "timeout": 5 },
+          { "type": "command", "command": "node .claude/hooks/check-metachar.js", "timeout": 5 },
+          { "type": "command", "command": "node .claude/hooks/verify-claims.js", "timeout": 5 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node .claude/hooks/heartbeat.js", "timeout": 10 }
+        ]
+      }
+    ]
+  },
+
+  "permissions": {
+    "$comment": "HONEST LIMIT: the wildcard denies below are honoured by Read and Edit but NOT by Glob (anthropics/claude-code#78752), so those trees can still be enumerated even though reading a file in them is blocked. On Windows, deny also matches the literal path string with no canonicalisation, so a path containing spaces or long components can be reached via its 8.3 short alias (PROGRA~1). Neither is fixable from here — both are upstream. `claude-spine doctor` flags every deny rule of yours with this shape, including these. A deny rule you cannot walk past is worth having; one you can is worth knowing about.",
+
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch)",
+      "Bash(npm test:*)",
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc --noEmit)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/credentials*)",
+      "Read(./**/*.pem)"
+    ]
+  }
+}

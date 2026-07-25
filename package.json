@@ -1,0 +1,31 @@
+{
+  "name": "claude-spine",
+  "version": "0.1.0",
+  "description": "Scaffold and verify a production Claude Code setup. Installs the hooks, then proves they catch what they claim to.",
+  "bin": {
+    "claude-spine": "bin/cli.js"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "bin",
+    "lib",
+    "template",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "agent",
+    "hooks",
+    "scaffold",
+    "lint"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}
