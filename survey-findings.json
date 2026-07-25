@@ -1,0 +1,194 @@
+{
+  "ranAt": "2026-07-25T21:09:43.878Z",
+  "tally": {
+    "scanned": 299,
+    "parsed": 295,
+    "fatal": 15,
+    "mcp": 10,
+    "deny": 53,
+    "ifcond": 4,
+    "inject": 111,
+    "denyMech": 128,
+    "clean": 221
+  },
+  "hits": [
+    {
+      "repo": "parcadei/Continuous-Claude-v3",
+      "fatal": [
+        "hooks.PostToolUse[3].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": [
+        "*"
+      ]
+    },
+    {
+      "repo": "Dicklesworthstone/mcp_agent_mail",
+      "fatal": [],
+      "mcp": [
+        "mcp__mcp-agent-mail__send_message",
+        "mcp__mcp-agent-mail__file_reservation_paths"
+      ]
+    },
+    {
+      "repo": "wtyler2505/ProtoPulse",
+      "fatal": [
+        "hooks.PostToolUse[8].matcher: is not a valid pattern: \"*\"",
+        "hooks.Stop[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.UserPromptSubmit[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": [
+        "*"
+      ]
+    },
+    {
+      "repo": "ProfFroggo/froggo-mission-control",
+      "fatal": [],
+      "mcp": [
+        "mcp__mission-control-db__task_update",
+        "mcp__mission-control-db__chat_post"
+      ]
+    },
+    {
+      "repo": "mt114ran/mt114ran.github.io",
+      "fatal": [
+        "hooks.tool-post-hook: must be an array, got string"
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "victorheifets/test-dev-tool",
+      "fatal": [],
+      "mcp": [
+        "mcp__task-master-ai__set_task_status"
+      ]
+    },
+    {
+      "repo": "adammanji/meterly-take-home",
+      "fatal": [
+        "hooks.SessionEnd[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "tygwan/AgenticREVIT",
+      "fatal": [
+        "hooks.Notification[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "auxi-wardrobe/auxi-all-in",
+      "fatal": [
+        "hooks.SubagentStart[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "arbgjr/estoque",
+      "fatal": [
+        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.PreToolUse[1].matcher: is not a valid pattern: \"Write(.agentic_sdlc/**/*)\"",
+        "hooks.PreToolUse[2].matcher: is not a valid pattern: \"Write(src/**/*)\"",
+        "hooks.PreToolUse[3].matcher: is not a valid pattern: \"Edit(src/**/*)\"",
+        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"Edit(*.py)\"",
+        "hooks.PostToolUse[1].matcher: is not a valid pattern: \"Write(*.py)\"",
+        "hooks.PostToolUse[3].matcher: is not a valid pattern: \"Write(*.spec.md)\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "OmelchMichael/mcp_agent_mail",
+      "fatal": [],
+      "mcp": [
+        "mcp__mcp-agent-mail__send_message",
+        "mcp__mcp-agent-mail__file_reservation_paths"
+      ]
+    },
+    {
+      "repo": "rysweet/RustyClawd",
+      "fatal": [
+        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": [
+        "*"
+      ]
+    },
+    {
+      "repo": "maidevberlin/logikids",
+      "fatal": [],
+      "mcp": [
+        "Write|Edit|Update|mcp__jetbrains__create_new_file|mcp__jetbrains__replace_text_in_file"
+      ]
+    },
+    {
+      "repo": "Wattanaroj2567/fallhelp",
+      "fatal": [
+        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "rkendev/smart-llm-router",
+      "fatal": [
+        "hooks.SessionStart[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "shakefu/contextium",
+      "fatal": [
+        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.PostToolUse[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": [
+        "*"
+      ]
+    },
+    {
+      "repo": "e128/dotnet-reference",
+      "fatal": [
+        "hooks.StopFailure[0].matcher: is not a valid pattern: \"*\"",
+        "hooks.UserPromptSubmit[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "ngocsangyem/context-engineer-local",
+      "fatal": [
+        "hooks.SubagentStart[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "buvis/home",
+      "fatal": [],
+      "mcp": [
+        "Bash|Read|Grep|Glob|Agent|WebFetch|WebSearch|mcp__.*|Edit|Write|MultiEdit"
+      ]
+    },
+    {
+      "repo": "TONwisdomyang/crypto-stock-tracker",
+      "fatal": [
+        "hooks.pre_etl[0]: must be an object, got string",
+        "hooks.pre_etl[1]: must be an object, got string",
+        "hooks.post_etl[0]: must be an object, got string",
+        "hooks.post_etl[1]: must be an object, got string",
+        "hooks.pre_deploy[0]: must be an object, got string",
+        "hooks.pre_deploy[1]: must be an object, got string",
+        "hooks.pre_deploy[2]: must be an object, got string",
+        "hooks.post_deploy[0]: must be an object, got string",
+        "hooks.post_deploy[1]: must be an object, got string"
+      ],
+      "mcp": []
+    },
+    {
+      "repo": "neyrojasj/smart-agent",
+      "fatal": [
+        "hooks.PreToolUse[0].matcher: is not a valid pattern: \"*\""
+      ],
+      "mcp": []
+    }
+  ]
+}
