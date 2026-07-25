@@ -27,5 +27,13 @@
   "license": "MIT",
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claude-spine/claude-spine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/claude-spine/claude-spine/issues"
+  },
+  "homepage": "https://github.com/claude-spine/claude-spine#readme"
 }
