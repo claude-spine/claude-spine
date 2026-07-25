@@ -206,9 +206,21 @@ async function main() {
     console.log(`  claude-spine pro — ${seats} seat${seats > 1 ? 's' : ''}, ${annual ? 'annual' : 'monthly'}`);
     console.log(`  $${price}${annual ? '/year' : '/month'}${annual ? `  (2 months free vs monthly)` : ''}`);
     console.log('');
-    console.log('  There is no checkout page yet — this is a real product with a deliberately');
-    console.log('  unglamorous buying process. Email the block below and you get a signed key');
-    console.log('  back within 24 hours, or I tell you why not.');
+    // "There is no checkout page yet" printed here until now — a sentence a stranger reads on
+    // the way to closing the tab. The email rail is real and stays, but it is the fallback, and
+    // it gets described as what it is (direct billing) instead of as a missing feature.
+    const { payUrl, hasCheckout } = require('../lib/pay');
+    if (hasCheckout()) {
+      console.log(`  ${payUrl(annual ? 'annual' : 'monthly')}`);
+      console.log('');
+      console.log('  Signed key lands in your inbox on payment. Keys verify offline: no licence');
+      console.log('  server, no phone-home, works on air-gapped CI.');
+      console.log('');
+      return;
+    }
+    console.log('  Billing is direct — no processor in the middle, no subscription portal that');
+    console.log('  forgets to cancel. Send the block below and a signed key comes back within');
+    console.log('  24 hours, or I tell you why not.');
     console.log('  Keys verify offline: no licence server, no phone-home, works on air-gapped CI.');
     console.log('  Nothing is charged until the key works in your CI — reply and tell me it did.');
     console.log('');
