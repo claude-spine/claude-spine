@@ -42,6 +42,31 @@ claude-spine doctor  ~/work/payments-api
 Every schema linter passes that repo. `settings.json` is valid, the event names are correct,
 the file exists. Three hazards walk straight through it.
 
+## this is not hypothetical — here is the survey
+
+I pointed every check in this tool at real public repositories. **3,696 of them have a
+`.claude/settings.json`.** Of the first 87 with a parseable one:
+
+| | | |
+|---:|---:|---|
+| **4** | **5%** | **have a schema fault that disables every hook in the file** ([#75071](https://github.com/anthropics/claude-code/issues/75071)) |
+| 5 | 6% | have `PostToolUse` hooks that never fire on MCP calls ([#73586](https://github.com/anthropics/claude-code/issues/73586)) |
+| 45 | 52% | face the no-safe-deny trap ([#78527](https://github.com/anthropics/claude-code/issues/78527)) |
+| 35 | 40% | have context-injecting hooks whose stdout may not reach the model ([#79299](https://github.com/anthropics/claude-code/issues/79299)) |
+| 19 | 22% | have deny rules that can be bypassed ([#78752](https://github.com/anthropics/claude-code/issues/78752)) |
+
+The 5% is the one to sit with. Those repos have **every hook silently disabled right now** and
+the maintainers don't know. The cause is the same every time: someone writes `matcher: "*"`
+thinking it's a glob. It's a regex. Bare `*` is an invalid regex. One bad matcher takes the
+whole file down, with no warning anywhere.
+
+One of them is a continuous-Claude harness — an unattended agent loop with every guard dead.
+
+**Honest limits on that number:** GitHub code search returns a biased sample (public, indexed,
+skewed small). One file per repo, so `settings.local.json` is invisible here. And it covers the
+config audits only — the fixture and liveness checks need an installed repo. Reproduce it
+yourself; the survey script is in the repo.
+
 ## Why this exists
 
 Copying a hooks config off a blog post gives you a **claim**. It does not tell you whether
