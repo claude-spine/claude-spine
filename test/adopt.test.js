@@ -405,6 +405,37 @@ test('MCP audit stays silent on PreToolUse and on a repo with no PostToolUse hoo
   assert.deepEqual(diag.mcpAudit, [], 'flagged a PreToolUse MCP matcher — those DO fire');
 });
 
+test('injection audit flags hooks whose whole product is stdout (#79299)', async () => {
+  // The nastiest shape of the three: the hook is correct, it IS invoked, it does its work, and
+  // the work is discarded in transit. The canary cannot catch it — the stamp lands, so liveness
+  // reads green. Only knowing what the hook was FOR tells you it stopped doing it.
+  const repo = tmp();
+  install(repo);
+  const sp = path.join(repo, '.claude', 'settings.json');
+  const s = JSON.parse(fs.readFileSync(sp, 'utf8'));
+  s.hooks.SessionStart = [{ hooks: [{ type: 'command', command: 'node .claude/hooks/inject-context.js' }] }];
+  s.hooks.UserPromptSubmit = [{ hooks: [{ type: 'command', command: 'node .claude/hooks/add-memory.js' }] }];
+  fs.writeFileSync(sp, JSON.stringify(s, null, 2));
+
+  const diag = await diagnose(repo);
+  const events = diag.injectAudit.map((f) => f.event).sort();
+  assert.deepEqual(events, ['SessionStart', 'UserPromptSubmit'], 'context-injecting hooks not flagged');
+  assert.match(diag.injectAudit[0].why, /79299/);
+
+  // Must NOT flag PreToolUse/Stop — those aren't injecting context, and a finding that fires on
+  // every hook in the file is a finding people scroll past.
+  assert.ok(!diag.injectAudit.some((f) => f.event === 'PreToolUse'), 'flagged a PreToolUse hook');
+  assert.ok(!diag.injectAudit.some((f) => f.event === 'Stop'), 'flagged a Stop hook');
+});
+
+test('injection audit is silent on a fresh install', async () => {
+  // The shipped template registers PreToolUse + Stop only, so this must say nothing about it.
+  const repo = tmp();
+  install(repo);
+  const diag = await diagnose(repo);
+  assert.deepEqual(diag.injectAudit, [], 'flagged something in our own template');
+});
+
 test('adopt reports cleanly when there is nothing to do', () => {
   const repo = tmp();
   install(repo); // only our own hooks

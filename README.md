@@ -213,6 +213,16 @@ different places:
 | hook registered, file present, **returns silently on `rm -rf`** | passes | **MISS** |
 | guard disarms itself on its own payload | passes | **MISS** |
 | guard fires on `git status`, so the team muted it in March | passes | **NOISE** |
+| one bad matcher has disabled **every hook in the file** | passes | **FATAL** (#75071) |
+| `PostToolUse` hook on your database MCP **never runs** | passes | **flagged** (#73586) |
+| deny rule walked past via `PROGRA~1` | passes | **flagged** (#78752) |
+| `if`-gated guard whose scoping fails open on `$()` | passes | **flagged** (#80140) |
+| `SessionStart` output stopped reaching the model in a point release | passes | **flagged** (#79299) |
+| hooks all correct, none of them **called** in five days | passes | **canary: STALE** |
+
+Every row in the bottom half is a real filed issue, by a named stranger, with a date. And every
+one of them leaves a `settings.json` that is perfectly valid JSON — which is exactly why a
+schema linter passes it and exactly why nobody notices.
 
 A schema-valid hook that no longer catches anything is the exact failure mode that gets you
 at 3am, because everything upstream of it reports green. Run both. The linter checks the

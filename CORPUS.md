@@ -35,6 +35,21 @@ Nine checks, six of them traceable to a filed issue by a named reporter.
 | `if`-scoping | [#80140](https://github.com/anthropics/claude-code/issues/80140) | 2026-07-22 | `if` conditions fail open on `$()`/backticks, so gated guards have coverage you cannot state |
 | deny rules | [#78752](https://github.com/anthropics/claude-code/issues/78752) | 2026-07-18 | 8.3 short-name aliasing on Windows; wildcards Glob does not honour |
 | MCP PostToolUse | [#73586](https://github.com/anthropics/claude-code/issues/73586) | 2026-07-02 | **PostToolUse never fires for MCP tool calls** — the matcher is correct, which is why nobody notices |
+| context injection | [#79299](https://github.com/anthropics/claude-code/issues/79299) | 2026-07-20 | SessionStart/UserPromptSubmit stdout stopped reaching the model — hook runs, output non-empty, model gets nothing |
+
+**On the injection one, because it is the nastiest shape here.** simpsonbm1 verified the hook
+*executes* (filesystem side effects prove it) and its stdout is *non-empty* (re-ran the identical
+command by hand), and the model still received nothing. Broke between 2.1.209 and 2.1.215, same
+machine, same settings, no config change.
+
+The canary cannot catch this one. The hook fires, so the stamp lands, so liveness reads green.
+The guard is correct, it is invoked, it does its work — and the work is discarded in transit.
+Only knowing what the hook was *for* tells you it stopped doing it, which is why this check is a
+heuristic that says so out loud rather than a pass/fail.
+
+**Three distinct shapes of the same disease are now catalogued here:** never called (#76322,
+#73586), called but disarmed (#80039, #80140), and called, working, output thrown away (#79299).
+All three report green everywhere upstream.
 
 **On the MCP one.** Reported by Chulf58 over a three-week window with hook dispatch otherwise
 healthy, and corroborated independently as the third finding in #75071. It matters more than it
